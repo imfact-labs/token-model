@@ -1,48 +1,35 @@
 package digest
 
 import (
+	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	"github.com/ProtoconNet/mitum-token/state"
 	"github.com/ProtoconNet/mitum2/base"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func (bs *BlockSession) prepareToken() error {
-	if len(bs.sts) < 1 {
-		return nil
-	}
-
-	var TokenModels []mongo.WriteModel
-	var TokenBalanceModels []mongo.WriteModel
-
-	for i := range bs.sts {
-		st := bs.sts[i]
-
-		switch {
-		case state.IsStateDesignKey(st.Key()):
-			j, err := bs.handleTokenState(st)
-			if err != nil {
-				return err
-			}
-			TokenModels = append(TokenModels, j...)
-		case state.IsStateTokenBalanceKey(st.Key()):
-			j, err := bs.handleTokenBalanceState(st)
-			if err != nil {
-				return err
-			}
-			TokenBalanceModels = append(TokenBalanceModels, j...)
-		default:
-			continue
+func PrepareToken(bs *currencydigest.BlockSession, st base.State) (string, []mongo.WriteModel, error) {
+	switch {
+	case state.IsStateDesignKey(st.Key()):
+		j, err := handleTokenState(bs, st)
+		if err != nil {
+			return "", nil, err
 		}
+
+		return DefaultColNameToken, j, nil
+	case state.IsStateTokenBalanceKey(st.Key()):
+		j, err := handleTokenBalanceState(bs, st)
+		if err != nil {
+			return "", nil, err
+		}
+
+		return DefaultColNameTokenBalance, j, nil
 	}
 
-	bs.tokenModels = TokenModels
-	bs.tokenBalanceModels = TokenBalanceModels
-
-	return nil
+	return "", nil, nil
 }
 
-func (bs *BlockSession) handleTokenState(st base.State) ([]mongo.WriteModel, error) {
-	if tokenDoc, err := NewTokenDoc(st, bs.st.Encoder()); err != nil {
+func handleTokenState(bs *currencydigest.BlockSession, st base.State) ([]mongo.WriteModel, error) {
+	if tokenDoc, err := NewTokenDoc(st, bs.Database().Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{
@@ -51,8 +38,8 @@ func (bs *BlockSession) handleTokenState(st base.State) ([]mongo.WriteModel, err
 	}
 }
 
-func (bs *BlockSession) handleTokenBalanceState(st base.State) ([]mongo.WriteModel, error) {
-	if tokenBalanceDoc, err := NewTokenBalanceDoc(st, bs.st.Encoder()); err != nil {
+func handleTokenBalanceState(bs *currencydigest.BlockSession, st base.State) ([]mongo.WriteModel, error) {
+	if tokenBalanceDoc, err := NewTokenBalanceDoc(st, bs.Database().Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{
