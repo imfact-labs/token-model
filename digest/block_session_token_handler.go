@@ -1,13 +1,13 @@
 package digest
 
 import (
-	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
+	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	"github.com/ProtoconNet/mitum-token/state"
 	"github.com/ProtoconNet/mitum2/base"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
-func PrepareToken(bs *currencydigest.BlockSession, st base.State) (string, []mongo.WriteModel, error) {
+func PrepareToken(bs *cdigest.BlockSession, st base.State) (string, []mongo.WriteModel, error) {
 	switch {
 	case state.IsStateDesignKey(st.Key()):
 		j, err := handleTokenState(bs, st)
@@ -28,7 +28,7 @@ func PrepareToken(bs *currencydigest.BlockSession, st base.State) (string, []mon
 	return "", nil, nil
 }
 
-func handleTokenState(bs *currencydigest.BlockSession, st base.State) ([]mongo.WriteModel, error) {
+func handleTokenState(bs *cdigest.BlockSession, st base.State) ([]mongo.WriteModel, error) {
 	if tokenDoc, err := NewTokenDoc(st, bs.Database().Encoder()); err != nil {
 		return nil, err
 	} else {
@@ -38,7 +38,7 @@ func handleTokenState(bs *currencydigest.BlockSession, st base.State) ([]mongo.W
 	}
 }
 
-func handleTokenBalanceState(bs *currencydigest.BlockSession, st base.State) ([]mongo.WriteModel, error) {
+func handleTokenBalanceState(bs *cdigest.BlockSession, st base.State) ([]mongo.WriteModel, error) {
 	if tokenBalanceDoc, err := NewTokenBalanceDoc(st, bs.Database().Encoder()); err != nil {
 		return nil, err
 	} else {
