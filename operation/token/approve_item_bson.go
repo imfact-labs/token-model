@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
-func (it ApprovesItem) MarshalBSON() ([]byte, error) {
+func (it ApproveItem) MarshalBSON() ([]byte, error) {
 	return bsonenc.Marshal(
 		bson.M{
 			"_hint":    it.Hint().String(),
@@ -27,7 +27,7 @@ type ApprovesItemBSONUnmarshaler struct {
 	Currency string `bson:"currency"`
 }
 
-func (it *ApprovesItem) DecodeBSON(b []byte, enc *bsonenc.Encoder) error {
+func (it *ApproveItem) DecodeBSON(b []byte, enc *bsonenc.Encoder) error {
 	var u ApprovesItemBSONUnmarshaler
 	if err := enc.Unmarshal(b, &u); err != nil {
 		return common.DecorateError(err, common.ErrDecodeBson, *it)

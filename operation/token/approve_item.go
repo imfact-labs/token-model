@@ -9,9 +9,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-var ApprovesItemHint = hint.MustNewHint("mitum-token-approves-item-v0.0.1")
+var ApproveItemHint = hint.MustNewHint("mitum-token-approve-item-v0.0.1")
 
-type ApprovesItem struct {
+type ApproveItem struct {
 	hint.BaseHinter
 	contract base.Address
 	approved base.Address
@@ -19,9 +19,9 @@ type ApprovesItem struct {
 	currency types.CurrencyID
 }
 
-func NewApprovesItem(contract base.Address, approved base.Address, amount common.Big, currency types.CurrencyID) ApprovesItem {
-	return ApprovesItem{
-		BaseHinter: hint.NewBaseHinter(ApprovesItemHint),
+func NewApproveItem(contract base.Address, approved base.Address, amount common.Big, currency types.CurrencyID) ApproveItem {
+	return ApproveItem{
+		BaseHinter: hint.NewBaseHinter(ApproveItemHint),
 		contract:   contract,
 		approved:   approved,
 		amount:     amount,
@@ -29,7 +29,7 @@ func NewApprovesItem(contract base.Address, approved base.Address, amount common
 	}
 }
 
-func (it ApprovesItem) IsValid([]byte) error {
+func (it ApproveItem) IsValid([]byte) error {
 	if err := it.BaseHinter.IsValid(nil); err != nil {
 		return err
 	}
@@ -54,7 +54,7 @@ func (it ApprovesItem) IsValid([]byte) error {
 	)
 }
 
-func (it ApprovesItem) Bytes() []byte {
+func (it ApproveItem) Bytes() []byte {
 	return util.ConcatBytesSlice(
 		it.contract.Bytes(),
 		it.approved.Bytes(),
@@ -63,24 +63,24 @@ func (it ApprovesItem) Bytes() []byte {
 	)
 }
 
-func (it ApprovesItem) Contract() base.Address {
+func (it ApproveItem) Contract() base.Address {
 	return it.contract
 }
 
-func (it ApprovesItem) Approved() base.Address {
+func (it ApproveItem) Approved() base.Address {
 	return it.approved
 }
 
-func (it ApprovesItem) Addresses() ([]base.Address, error) {
+func (it ApproveItem) Addresses() ([]base.Address, error) {
 	as := make([]base.Address, 1)
 	as[0] = it.approved
 	return as, nil
 }
 
-func (it ApprovesItem) Amount() common.Big {
+func (it ApproveItem) Amount() common.Big {
 	return it.amount
 }
 
-func (it ApprovesItem) Currency() types.CurrencyID {
+func (it ApproveItem) Currency() types.CurrencyID {
 	return it.currency
 }

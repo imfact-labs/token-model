@@ -106,34 +106,16 @@ func CheckDuplication(opr *processor.OperationProcessor, op base.Operation) erro
 			return errors.Errorf("expected ApproveFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = processor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case token.Approves:
-		fact, ok := t.Fact().(token.ApprovesFact)
-		if !ok {
-			return errors.Errorf("expected ApprovesFact, not %T", t.Fact())
-		}
-		duplicationTypeSenderID = processor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 	case token.Transfer:
 		fact, ok := t.Fact().(token.TransferFact)
 		if !ok {
 			return errors.Errorf("expected TransferFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = processor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case token.Transfers:
-		fact, ok := t.Fact().(token.TransfersFact)
-		if !ok {
-			return errors.Errorf("expected TransfersFact, not %T", t.Fact())
-		}
-		duplicationTypeSenderID = processor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 	case token.TransferFrom:
 		fact, ok := t.Fact().(token.TransferFromFact)
 		if !ok {
 			return errors.Errorf("expected TransferFromFact, not %T", t.Fact())
-		}
-		duplicationTypeSenderID = processor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case token.TransfersFrom:
-		fact, ok := t.Fact().(token.TransfersFromFact)
-		if !ok {
-			return errors.Errorf("expected TransfersFromFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = processor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 	default:
@@ -210,11 +192,8 @@ func GetNewProcessor(opr *processor.OperationProcessor, op base.Operation) (base
 		token.Mint,
 		token.Burn,
 		token.Approve,
-		token.Approves,
 		token.Transfer,
-		token.Transfers,
-		token.TransferFrom,
-		token.TransfersFrom:
+		token.TransferFrom:
 		return nil, false, errors.Errorf("%T needs SetProcessor", t)
 	default:
 		return nil, false, nil

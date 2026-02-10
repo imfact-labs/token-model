@@ -8,10 +8,10 @@ import (
 	"github.com/ProtoconNet/mitum2/util/hint"
 )
 
-func (it *ApprovesItem) unpack(
+func (it *TransferFromItem) unpack(
 	enc encoder.Encoder,
 	ht hint.Hint,
-	ca, apr, am, cid string,
+	ca, rc, tg, am, cid string,
 ) error {
 	it.BaseHinter = hint.NewBaseHinter(ht)
 	switch a, err := base.DecodeAddress(ca, enc); {
@@ -21,11 +21,17 @@ func (it *ApprovesItem) unpack(
 		it.contract = a
 	}
 
-	approved, err := base.DecodeAddress(apr, enc)
+	receiver, err := base.DecodeAddress(rc, enc)
 	if err != nil {
 		return err
 	}
-	it.approved = approved
+	it.receiver = receiver
+
+	target, err := base.DecodeAddress(tg, enc)
+	if err != nil {
+		return err
+	}
+	it.target = target
 
 	if b, err := common.NewBigFromString(am); err != nil {
 		return err

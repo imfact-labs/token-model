@@ -7,28 +7,30 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
-func (it TransfersItem) MarshalBSON() ([]byte, error) {
+func (it TransferFromItem) MarshalBSON() ([]byte, error) {
 	return bsonenc.Marshal(
 		bson.M{
 			"_hint":    it.Hint().String(),
 			"contract": it.contract,
 			"receiver": it.receiver,
+			"target":   it.target,
 			"amount":   it.amount,
 			"currency": it.currency,
 		},
 	)
 }
 
-type TransfersItemBSONUnmarshaler struct {
+type TransferFromItemBSONUnmarshaler struct {
 	Hint     string `bson:"_hint"`
 	Contract string `bson:"contract"`
 	Receiver string `bson:"receiver"`
+	Target   string `bson:"target"`
 	Amount   string `bson:"amount"`
 	Currency string `bson:"currency"`
 }
 
-func (it *TransfersItem) DecodeBSON(b []byte, enc *bsonenc.Encoder) error {
-	var u TransfersItemBSONUnmarshaler
+func (it *TransferFromItem) DecodeBSON(b []byte, enc *bsonenc.Encoder) error {
+	var u TransferFromItemBSONUnmarshaler
 	if err := enc.Unmarshal(b, &u); err != nil {
 		return common.DecorateError(err, common.ErrDecodeBson, *it)
 	}
@@ -38,7 +40,7 @@ func (it *TransfersItem) DecodeBSON(b []byte, enc *bsonenc.Encoder) error {
 		return common.DecorateError(err, common.ErrDecodeBson, *it)
 	}
 
-	if err := it.unpack(enc, ht, u.Contract, u.Receiver, u.Amount, u.Currency); err != nil {
+	if err := it.unpack(enc, ht, u.Contract, u.Receiver, u.Target, u.Amount, u.Currency); err != nil {
 		return common.DecorateError(err, common.ErrDecodeBson, *it)
 	}
 	return nil

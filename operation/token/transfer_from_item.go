@@ -9,9 +9,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-var TransfersFromItemHint = hint.MustNewHint("mitum-token-transfers-from-item-v0.0.1")
+var TransferFromItemHint = hint.MustNewHint("mitum-token-transfer-from-item-v0.0.1")
 
-type TransfersFromItem struct {
+type TransferFromItem struct {
 	hint.BaseHinter
 	contract base.Address
 	receiver base.Address
@@ -20,9 +20,11 @@ type TransfersFromItem struct {
 	currency types.CurrencyID
 }
 
-func NewTransfersFromItem(contract base.Address, receiver, target base.Address, amount common.Big, currency types.CurrencyID) TransfersFromItem {
-	return TransfersFromItem{
-		BaseHinter: hint.NewBaseHinter(TransfersFromItemHint),
+func NewTransferFromItem(
+	contract base.Address, receiver, target base.Address, amount common.Big, currency types.CurrencyID,
+) TransferFromItem {
+	return TransferFromItem{
+		BaseHinter: hint.NewBaseHinter(TransferFromItemHint),
 		contract:   contract,
 		receiver:   receiver,
 		target:     target,
@@ -31,7 +33,7 @@ func NewTransfersFromItem(contract base.Address, receiver, target base.Address, 
 	}
 }
 
-func (it TransfersFromItem) IsValid([]byte) error {
+func (it TransferFromItem) IsValid([]byte) error {
 	if err := it.BaseHinter.IsValid(nil); err != nil {
 		return err
 	}
@@ -53,7 +55,8 @@ func (it TransfersFromItem) IsValid([]byte) error {
 	}
 
 	if !it.amount.OverZero() {
-		return common.ErrFactInvalid.Wrap(common.ErrValOOR.Wrap(errors.Errorf("transfer amount must be over zero, got %v", it.amount)))
+		return common.ErrFactInvalid.Wrap(
+			common.ErrValOOR.Wrap(errors.Errorf("transfer amount must be over zero, got %v", it.amount)))
 	}
 
 	return util.CheckIsValiders(nil, false,
@@ -65,7 +68,7 @@ func (it TransfersFromItem) IsValid([]byte) error {
 	)
 }
 
-func (it TransfersFromItem) Bytes() []byte {
+func (it TransferFromItem) Bytes() []byte {
 	return util.ConcatBytesSlice(
 		it.contract.Bytes(),
 		it.receiver.Bytes(),
@@ -75,29 +78,29 @@ func (it TransfersFromItem) Bytes() []byte {
 	)
 }
 
-func (it TransfersFromItem) Contract() base.Address {
+func (it TransferFromItem) Contract() base.Address {
 	return it.contract
 }
 
-func (it TransfersFromItem) Receiver() base.Address {
+func (it TransferFromItem) Receiver() base.Address {
 	return it.receiver
 }
 
-func (it TransfersFromItem) Target() base.Address {
+func (it TransferFromItem) Target() base.Address {
 	return it.target
 }
 
-func (it TransfersFromItem) Addresses() ([]base.Address, error) {
+func (it TransferFromItem) Addresses() ([]base.Address, error) {
 	as := make([]base.Address, 2)
 	as[0] = it.receiver
 	as[1] = it.target
 	return as, nil
 }
 
-func (it TransfersFromItem) Amount() common.Big {
+func (it TransferFromItem) Amount() common.Big {
 	return it.amount
 }
 
-func (it TransfersFromItem) Currency() types.CurrencyID {
+func (it TransferFromItem) Currency() types.CurrencyID {
 	return it.currency
 }

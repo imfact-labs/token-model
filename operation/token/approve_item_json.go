@@ -17,7 +17,7 @@ type ApprovesItemJSONMarshaler struct {
 	Currency types.CurrencyID `json:"currency"`
 }
 
-func (it ApprovesItem) MarshalJSON() ([]byte, error) {
+func (it ApproveItem) MarshalJSON() ([]byte, error) {
 	return util.MarshalJSON(ApprovesItemJSONMarshaler{
 		BaseHinter: it.BaseHinter,
 		Contract:   it.contract,
@@ -35,7 +35,7 @@ type ApprovesItemJSONUnmarshaler struct {
 	Currency string    `json:"currency"`
 }
 
-func (it *ApprovesItem) DecodeJSON(b []byte, enc encoder.Encoder) error {
+func (it *ApproveItem) DecodeJSON(b []byte, enc encoder.Encoder) error {
 	var u ApprovesItemJSONUnmarshaler
 	if err := enc.Unmarshal(b, &u); err != nil {
 		return common.DecorateError(err, common.ErrDecodeJson, *it)

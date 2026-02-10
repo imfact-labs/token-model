@@ -8,10 +8,10 @@ import (
 	"github.com/ProtoconNet/mitum2/util/hint"
 )
 
-func (it *TransfersFromItem) unpack(
+func (it *TransferItem) unpack(
 	enc encoder.Encoder,
 	ht hint.Hint,
-	ca, rc, tg, am, cid string,
+	ca, rc, am, cid string,
 ) error {
 	it.BaseHinter = hint.NewBaseHinter(ht)
 	switch a, err := base.DecodeAddress(ca, enc); {
@@ -26,12 +26,6 @@ func (it *TransfersFromItem) unpack(
 		return err
 	}
 	it.receiver = receiver
-
-	target, err := base.DecodeAddress(tg, enc)
-	if err != nil {
-		return err
-	}
-	it.target = target
 
 	if b, err := common.NewBigFromString(am); err != nil {
 		return err

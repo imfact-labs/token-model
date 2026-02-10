@@ -9,7 +9,7 @@ import (
 	"github.com/ProtoconNet/mitum2/util/hint"
 )
 
-type TransfersItemJSONMarshaler struct {
+type TransferItemJSONMarshaler struct {
 	hint.BaseHinter
 	Contract base.Address     `json:"contract"`
 	Receiver base.Address     `json:"receiver"`
@@ -17,8 +17,8 @@ type TransfersItemJSONMarshaler struct {
 	Currency types.CurrencyID `json:"currency"`
 }
 
-func (it TransfersItem) MarshalJSON() ([]byte, error) {
-	return util.MarshalJSON(TransfersItemJSONMarshaler{
+func (it TransferItem) MarshalJSON() ([]byte, error) {
+	return util.MarshalJSON(TransferItemJSONMarshaler{
 		BaseHinter: it.BaseHinter,
 		Contract:   it.contract,
 		Receiver:   it.receiver,
@@ -27,7 +27,7 @@ func (it TransfersItem) MarshalJSON() ([]byte, error) {
 	})
 }
 
-type TransfersItemJSONUnmarshaler struct {
+type TransferItemJSONUnmarshaler struct {
 	Hint     hint.Hint `json:"_hint"`
 	Contract string    `json:"contract"`
 	Receiver string    `json:"receiver"`
@@ -35,8 +35,8 @@ type TransfersItemJSONUnmarshaler struct {
 	Currency string    `json:"currency"`
 }
 
-func (it *TransfersItem) DecodeJSON(b []byte, enc encoder.Encoder) error {
-	var u TransfersItemJSONUnmarshaler
+func (it *TransferItem) DecodeJSON(b []byte, enc encoder.Encoder) error {
+	var u TransferItemJSONUnmarshaler
 	if err := enc.Unmarshal(b, &u); err != nil {
 		return common.DecorateError(err, common.ErrDecodeJson, *it)
 	}

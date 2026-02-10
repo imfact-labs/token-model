@@ -26,14 +26,11 @@ var AddedHinters = []encoder.DecodeDetail{
 	{Hint: token.MintHint, Instance: token.Mint{}},
 	{Hint: token.BurnHint, Instance: token.Burn{}},
 	{Hint: token.ApproveHint, Instance: token.Approve{}},
-	{Hint: token.ApprovesHint, Instance: token.Approves{}},
-	{Hint: token.ApprovesItemHint, Instance: token.ApprovesItem{}},
+	{Hint: token.ApproveItemHint, Instance: token.ApproveItem{}},
 	{Hint: token.TransferHint, Instance: token.Transfer{}},
-	{Hint: token.TransfersHint, Instance: token.Transfers{}},
-	{Hint: token.TransfersItemHint, Instance: token.TransfersItem{}},
+	{Hint: token.TransferItemHint, Instance: token.TransferItem{}},
 	{Hint: token.TransferFromHint, Instance: token.TransferFrom{}},
-	{Hint: token.TransfersFromHint, Instance: token.TransfersFrom{}},
-	{Hint: token.TransfersFromItemHint, Instance: token.TransfersFromItem{}},
+	{Hint: token.TransferFromItemHint, Instance: token.TransferFromItem{}},
 }
 
 var AddedSupportedHinters = []encoder.DecodeDetail{
@@ -41,11 +38,8 @@ var AddedSupportedHinters = []encoder.DecodeDetail{
 	{Hint: token.MintFactHint, Instance: token.MintFact{}},
 	{Hint: token.BurnFactHint, Instance: token.BurnFact{}},
 	{Hint: token.ApproveFactHint, Instance: token.ApproveFact{}},
-	{Hint: token.ApprovesFactHint, Instance: token.ApprovesFact{}},
 	{Hint: token.TransferFactHint, Instance: token.TransferFact{}},
-	{Hint: token.TransfersFactHint, Instance: token.TransfersFact{}},
 	{Hint: token.TransferFromFactHint, Instance: token.TransferFromFact{}},
-	{Hint: token.TransfersFromFactHint, Instance: token.TransfersFromFact{}},
 }
 
 func init() {

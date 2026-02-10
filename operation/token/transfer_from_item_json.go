@@ -9,7 +9,7 @@ import (
 	"github.com/ProtoconNet/mitum2/util/hint"
 )
 
-type TransfersFromItemJSONMarshaler struct {
+type TransferFromItemJSONMarshaler struct {
 	hint.BaseHinter
 	Contract base.Address     `json:"contract"`
 	Receiver base.Address     `json:"receiver"`
@@ -18,8 +18,8 @@ type TransfersFromItemJSONMarshaler struct {
 	Currency types.CurrencyID `json:"currency"`
 }
 
-func (it TransfersFromItem) MarshalJSON() ([]byte, error) {
-	return util.MarshalJSON(TransfersFromItemJSONMarshaler{
+func (it TransferFromItem) MarshalJSON() ([]byte, error) {
+	return util.MarshalJSON(TransferFromItemJSONMarshaler{
 		BaseHinter: it.BaseHinter,
 		Contract:   it.contract,
 		Receiver:   it.receiver,
@@ -29,7 +29,7 @@ func (it TransfersFromItem) MarshalJSON() ([]byte, error) {
 	})
 }
 
-type TransfersFromItemJSONUnmarshaler struct {
+type TransferFromItemJSONUnmarshaler struct {
 	Hint     hint.Hint `json:"_hint"`
 	Contract string    `json:"contract"`
 	Receiver string    `json:"receiver"`
@@ -38,8 +38,8 @@ type TransfersFromItemJSONUnmarshaler struct {
 	Currency string    `json:"currency"`
 }
 
-func (it *TransfersFromItem) DecodeJSON(b []byte, enc encoder.Encoder) error {
-	var u TransfersFromItemJSONUnmarshaler
+func (it *TransferFromItem) DecodeJSON(b []byte, enc encoder.Encoder) error {
+	var u TransferFromItemJSONUnmarshaler
 	if err := enc.Unmarshal(b, &u); err != nil {
 		return common.DecorateError(err, common.ErrDecodeJson, *it)
 	}
