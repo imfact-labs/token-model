@@ -3,11 +3,11 @@ package types
 import (
 	"encoding/json"
 
-	"github.com/ProtoconNet/mitum-token/utils"
-	"github.com/ProtoconNet/mitum2/base"
-	"github.com/ProtoconNet/mitum2/util"
-	"github.com/ProtoconNet/mitum2/util/encoder"
-	"github.com/ProtoconNet/mitum2/util/hint"
+	"github.com/imfact-labs/mitum2/base"
+	"github.com/imfact-labs/mitum2/util"
+	"github.com/imfact-labs/mitum2/util/encoder"
+	"github.com/imfact-labs/mitum2/util/hint"
+	"github.com/imfact-labs/token-model/utils"
 )
 
 type ApproveBoxJSONMarshaler struct {

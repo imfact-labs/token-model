@@ -1,11 +1,11 @@
 package token
 
 import (
-	"github.com/ProtoconNet/mitum-currency/v3/common"
-	"github.com/ProtoconNet/mitum-currency/v3/operation/extras"
-	"github.com/ProtoconNet/mitum-currency/v3/types"
-	"github.com/ProtoconNet/mitum2/base"
-	"github.com/ProtoconNet/mitum2/util"
+	"github.com/imfact-labs/currency-model/common"
+	"github.com/imfact-labs/currency-model/operation/extras"
+	"github.com/imfact-labs/currency-model/types"
+	"github.com/imfact-labs/mitum2/base"
+	"github.com/imfact-labs/mitum2/util"
 	"github.com/pkg/errors"
 )
 
@@ -92,4 +92,11 @@ func (fact TokenFact) FactUser() base.Address {
 
 func (fact TokenFact) Signer() base.Address {
 	return fact.sender
+}
+
+func (fact TokenFact) DupKey() (map[types.DuplicationKeyType][]string, error) {
+	r := make(map[types.DuplicationKeyType][]string)
+	r[extras.DuplicationKeyTypeSender] = []string{fact.sender.String()}
+
+	return r, nil
 }

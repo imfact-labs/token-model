@@ -2,8 +2,8 @@ package cmds
 
 import (
 	"fmt"
-	
-	"github.com/ProtoconNet/mitum-token/types"
+
+	"github.com/imfact-labs/token-model/types"
 )
 
 type TokenSymbolFlag struct {

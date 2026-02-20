@@ -2,8 +2,8 @@ package types
 
 import (
 	"regexp"
-	
-	"github.com/ProtoconNet/mitum-currency/v3/common"
+
+	"github.com/imfact-labs/currency-model/common"
 	"github.com/pkg/errors"
 )
 

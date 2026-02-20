@@ -3,7 +3,7 @@ package utils
 import (
 	"encoding/json"
 
-	"github.com/ProtoconNet/mitum2/util"
+	"github.com/imfact-labs/mitum2/util"
 )
 
 func DecodeMap(b []byte) (map[string]interface{}, error) {

@@ -1,13 +1,13 @@
 package digest
 
 import (
-	"github.com/ProtoconNet/mitum-currency/v3/common"
-	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
-	"github.com/ProtoconNet/mitum-currency/v3/digest/util"
-	"github.com/ProtoconNet/mitum-token/state"
-	"github.com/ProtoconNet/mitum-token/types"
-	"github.com/ProtoconNet/mitum2/base"
-	utilm "github.com/ProtoconNet/mitum2/util"
+	"github.com/imfact-labs/currency-model/common"
+	cdigest "github.com/imfact-labs/currency-model/digest"
+	"github.com/imfact-labs/currency-model/digest/util"
+	"github.com/imfact-labs/mitum2/base"
+	utilm "github.com/imfact-labs/mitum2/util"
+	"github.com/imfact-labs/token-model/state"
+	"github.com/imfact-labs/token-model/types"
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"

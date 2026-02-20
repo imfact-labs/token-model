@@ -1,11 +1,10 @@
 package token
 
 import (
-	"github.com/ProtoconNet/mitum-currency/v3/common"
-	"github.com/ProtoconNet/mitum-currency/v3/operation/extras"
+	"github.com/imfact-labs/currency-model/common"
+	"github.com/imfact-labs/currency-model/operation/extras"
+	"github.com/imfact-labs/currency-model/utils/bsonenc"
 	"go.mongodb.org/mongo-driver/v2/bson"
-
-	bsonenc "github.com/ProtoconNet/mitum-currency/v3/digest/util/bson"
 )
 
 func (fact RegisterModelFact) MarshalBSON() ([]byte, error) {

@@ -3,8 +3,8 @@ package token
 import (
 	"fmt"
 
-	"github.com/ProtoconNet/mitum-token/utils"
-	"github.com/ProtoconNet/mitum2/base"
+	"github.com/imfact-labs/mitum2/base"
+	"github.com/imfact-labs/token-model/utils"
 )
 
 //func ErrStringPreProcess(t any) string {

@@ -1,9 +1,9 @@
 package token
 
 import (
-	"github.com/ProtoconNet/mitum-currency/v3/common"
-	bsonenc "github.com/ProtoconNet/mitum-currency/v3/digest/util/bson"
-	"github.com/ProtoconNet/mitum-currency/v3/operation/extras"
+	"github.com/imfact-labs/currency-model/common"
+	"github.com/imfact-labs/currency-model/operation/extras"
+	"github.com/imfact-labs/currency-model/utils/bsonenc"
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
 

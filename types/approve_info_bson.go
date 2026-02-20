@@ -1,10 +1,10 @@
 package types
 
 import (
-	bsonenc "github.com/ProtoconNet/mitum-currency/v3/digest/util/bson"
-	"github.com/ProtoconNet/mitum-token/utils"
-	"github.com/ProtoconNet/mitum2/util"
-	"github.com/ProtoconNet/mitum2/util/hint"
+	"github.com/imfact-labs/currency-model/utils/bsonenc"
+	"github.com/imfact-labs/mitum2/util"
+	"github.com/imfact-labs/mitum2/util/hint"
+	"github.com/imfact-labs/token-model/utils"
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
 

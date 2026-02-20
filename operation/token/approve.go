@@ -1,13 +1,13 @@
 package token
 
 import (
-	"github.com/ProtoconNet/mitum-currency/v3/common"
-	"github.com/ProtoconNet/mitum-currency/v3/operation/extras"
-	"github.com/ProtoconNet/mitum-currency/v3/types"
-	"github.com/ProtoconNet/mitum2/base"
-	"github.com/ProtoconNet/mitum2/util"
-	"github.com/ProtoconNet/mitum2/util/hint"
-	"github.com/ProtoconNet/mitum2/util/valuehash"
+	"github.com/imfact-labs/currency-model/common"
+	"github.com/imfact-labs/currency-model/operation/extras"
+	"github.com/imfact-labs/currency-model/types"
+	"github.com/imfact-labs/mitum2/base"
+	"github.com/imfact-labs/mitum2/util"
+	"github.com/imfact-labs/mitum2/util/hint"
+	"github.com/imfact-labs/mitum2/util/valuehash"
 	"github.com/pkg/errors"
 )
 
@@ -168,6 +168,16 @@ func (fact ApproveFact) ActiveContract() []base.Address {
 		arr = append(arr, fact.items[i].contract)
 	}
 	return arr
+}
+
+func (fact ApproveFact) DupKey() (map[types.DuplicationKeyType][]string, error) {
+	r := make(map[types.DuplicationKeyType][]string)
+	r[extras.DuplicationKeyTypeSender] = []string{fact.sender.String()}
+	for _, item := range fact.items {
+		r[extras.DuplicationKeyTypeContractStatus] = append(r[extras.DuplicationKeyTypeContractStatus], item.contract.String())
+	}
+
+	return r, nil
 }
 
 type Approve struct {

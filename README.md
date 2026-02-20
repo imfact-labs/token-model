@@ -1,23 +1,23 @@
-### mitum-token
+### token-model
 
-*mitum-token* is a [mitum](https://github.com/ProtoconNet/mitum2)-based contract model and is a service that provides mint functions.
+*token-model* is a token minting contract model based on [mitum](https://github.com/imfact-labs/mitum2).
 
 #### Installation
 
 ```sh
-$ git clone https://github.com/ProtoconNet/mitum-token
+$ git clone https://github.com/imfact-labs/token-model
 
-$ cd mitum-token
+$ cd token-model
 
-$ go build -o ./mt ./main.go
+$ go build -o ./imfact ./main.go
 ```
 
 #### Run
 
 ```sh
-$ ./mt init --design=<config file> <genesis config file>
+$ ./imfact init --design=<config file> <genesis config file>
 
-$ ./mt run --design=<config file>
+$ ./imfact run --design=<config file>
 ```
 
 [standalong.yml](standalone.yml) is a sample of `config file`.
