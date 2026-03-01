@@ -1,16 +1,11 @@
-package cmds
+package spec
 
 import (
-	ccmds "github.com/imfact-labs/currency-model/app/cmds"
 	"github.com/imfact-labs/mitum2/util/encoder"
 	"github.com/imfact-labs/token-model/operation/token"
 	"github.com/imfact-labs/token-model/state"
 	"github.com/imfact-labs/token-model/types"
-	"github.com/pkg/errors"
 )
-
-var Hinters []encoder.DecodeDetail
-var SupportedProposalOperationFactHinters []encoder.DecodeDetail
 
 var AddedHinters = []encoder.DecodeDetail{
 	// revive:disable-next-line:line-length-limit
@@ -40,28 +35,4 @@ var AddedSupportedHinters = []encoder.DecodeDetail{
 	{Hint: token.ApproveFactHint, Instance: token.ApproveFact{}},
 	{Hint: token.TransferFactHint, Instance: token.TransferFact{}},
 	{Hint: token.TransferFromFactHint, Instance: token.TransferFromFact{}},
-}
-
-func init() {
-	Hinters = append(Hinters, ccmds.Hinters...)
-	Hinters = append(Hinters, AddedHinters...)
-
-	SupportedProposalOperationFactHinters = append(SupportedProposalOperationFactHinters, ccmds.SupportedProposalOperationFactHinters...)
-	SupportedProposalOperationFactHinters = append(SupportedProposalOperationFactHinters, AddedSupportedHinters...)
-}
-
-func LoadHinters(encs *encoder.Encoders) error {
-	for i := range Hinters {
-		if err := encs.AddDetail(Hinters[i]); err != nil {
-			return errors.Wrap(err, "add hinter to encoder")
-		}
-	}
-
-	for i := range SupportedProposalOperationFactHinters {
-		if err := encs.AddDetail(SupportedProposalOperationFactHinters[i]); err != nil {
-			return errors.Wrap(err, "add supported proposal operation fact hinter to encoder")
-		}
-	}
-
-	return nil
 }

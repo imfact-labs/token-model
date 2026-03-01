@@ -1,11 +1,10 @@
-package cmds
+package steps
 
 import (
 	"context"
 
-	ccmds "github.com/imfact-labs/currency-model/app/cmds"
 	cprocessor "github.com/imfact-labs/currency-model/operation/processor"
-	"github.com/imfact-labs/currency-model/types"
+	ctype "github.com/imfact-labs/currency-model/types"
 	"github.com/imfact-labs/mitum2/base"
 	"github.com/imfact-labs/mitum2/isaac"
 	"github.com/imfact-labs/mitum2/launch"
@@ -13,13 +12,14 @@ import (
 	"github.com/imfact-labs/mitum2/util/hint"
 	"github.com/imfact-labs/mitum2/util/ps"
 	"github.com/imfact-labs/token-model/operation/token"
+	"github.com/imfact-labs/token-model/runtime/contracts"
 )
 
 var PNameOperationProcessorsMap = ps.Name("mitum-token-operation-processors-map")
 
 type processorInfo struct {
 	hint      hint.Hint
-	processor types.GetNewProcessor
+	processor ctype.GetNewProcessor
 }
 
 func POperationProcessorsMap(pctx context.Context) (context.Context, error) {
@@ -31,7 +31,7 @@ func POperationProcessorsMap(pctx context.Context) (context.Context, error) {
 	if err := util.LoadFromContextOK(pctx,
 		launch.ISAACParamsContextKey, &isaacParams,
 		launch.CenterDatabaseContextKey, &db,
-		ccmds.OperationProcessorContextKey, &opr,
+		contracts.OperationProcessorContextKey, &opr,
 		launch.OperationProcessorsMapContextKey, &set,
 	); err != nil {
 		return pctx, err
@@ -46,7 +46,7 @@ func POperationProcessorsMap(pctx context.Context) (context.Context, error) {
 		return pctx, err
 	}
 
-	ps := []processorInfo{
+	processors := []processorInfo{
 		{token.RegisterModelHint, token.NewRegisterModelProcessor()},
 		{token.MintHint, token.NewMintProcessor()},
 		{token.BurnHint, token.NewBurnProcessor()},
@@ -55,7 +55,9 @@ func POperationProcessorsMap(pctx context.Context) (context.Context, error) {
 		{token.TransferFromHint, token.NewTransferFromProcessor()},
 	}
 
-	for _, p := range ps {
+	for i := range processors {
+		p := processors[i]
+
 		if err := opr.SetProcessor(p.hint, p.processor); err != nil {
 			return pctx, err
 		}
@@ -68,12 +70,13 @@ func POperationProcessorsMap(pctx context.Context) (context.Context, error) {
 					nil,
 					nil,
 				)
-			}); err != nil {
+			},
+		); err != nil {
 			return pctx, err
 		}
 	}
 
-	pctx = context.WithValue(pctx, ccmds.OperationProcessorContextKey, opr)
+	pctx = context.WithValue(pctx, contracts.OperationProcessorContextKey, opr)
 	pctx = context.WithValue(pctx, launch.OperationProcessorsMapContextKey, set) //revive:disable-line:modifies-parameter
 
 	return pctx, nil
