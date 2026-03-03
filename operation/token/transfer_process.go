@@ -157,7 +157,8 @@ func (opp *TransferProcessor) PreProcess(
 
 	_, err := PrepareSenderTotalAmounts(fact.Sender().String(), required, getStateFunc)
 	if err != nil {
-		return nil, base.NewBaseOperationProcessReasonError("process Transfer; %w", err), nil
+		return nil, base.NewBaseOperationProcessReasonError(
+			common.ErrMPreProcess.Wrap(common.ErrMValueInvalid).Errorf(err.Error())), nil
 	}
 
 	var wg sync.WaitGroup
@@ -307,7 +308,7 @@ func PrepareSenderTotalAmounts(
 		}
 		if am.Compare(rq) < 0 {
 			return nil, errors.Errorf(
-				"token balance of holder %s is less than amount to transfer in contract account %s, %v < %v",
+				"token balance of sender %s is less than amount to transfer in contract account %s, %v < %v",
 				holder, ca, am, rq)
 		}
 
