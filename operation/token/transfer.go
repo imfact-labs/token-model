@@ -83,14 +83,15 @@ func (fact TransferFact) IsValid(b []byte) error {
 			return common.ErrFactInvalid.Wrap(common.ErrValOOR.Wrap(errors.Errorf("transfer amount must be over zero, got %v", item.amount)))
 		}
 
-		if _, found := founds[item.contract.String()+"-"+item.receiver.String()]; found {
+		key := item.contract.String() + "-" + item.receiver.String()
+		if _, found := founds[key]; found {
 			return common.ErrFactInvalid.Wrap(
 				common.ErrDupVal.Wrap(
 					errors.Errorf(
 						"receiver account %v in contract account %v", item.receiver, item.contract)))
 		}
 
-		founds[item.contract.String()+"-"+item.receiver.String()] = struct{}{}
+		founds[key] = struct{}{}
 	}
 
 	if err := common.IsValidOperationFact(fact, b); err != nil {
@@ -190,11 +191,17 @@ func (fact TransferFact) ActiveContract() []base.Address {
 func (fact TransferFact) DupKey() (map[types.DuplicationKeyType][]string, error) {
 	r := make(map[types.DuplicationKeyType][]string)
 	r[extras.DuplicationKeyTypeSender] = []string{fact.sender.String()}
+	dupSet := make(map[string]struct{}, len(fact.items))
 	for _, item := range fact.items {
-		r[processor.DuplicationTypeTokenSender] = append(
-			r[processor.DuplicationTypeTokenSender],
-			fmt.Sprintf("%s:%s", item.Contract().String(), fact.sender.String()),
-		)
+		key := fmt.Sprintf("%s:%s", item.Contract().String(), fact.sender.String())
+		_, found := dupSet[key]
+		if !found {
+			r[processor.DuplicationTypeTokenSender] = append(
+				r[processor.DuplicationTypeTokenSender],
+				key,
+			)
+			dupSet[key] = struct{}{}
+		}
 	}
 
 	return r, nil
