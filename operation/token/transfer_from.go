@@ -23,19 +23,22 @@ var MaxTransferFromItems = 100
 
 type TransferFromFact struct {
 	base.BaseFact
-	sender base.Address
-	items  []TransferFromItem
+	sender   base.Address
+	items    []TransferFromItem
+	currency types.CurrencyID
 }
 
 func NewTransferFromFact(
 	token []byte,
 	sender base.Address,
 	items []TransferFromItem,
+	currency types.CurrencyID,
 ) TransferFromFact {
 	fact := TransferFromFact{
 		BaseFact: base.NewBaseFact(TransferFromFactHint, token),
 		sender:   sender,
 		items:    items,
+		currency: currency,
 	}
 	fact.SetHash(fact.GenerateHash())
 	return fact
@@ -56,6 +59,7 @@ func (fact TransferFromFact) IsValid(b []byte) error {
 	if err := util.CheckIsValiders(nil, false,
 		fact.BaseFact,
 		fact.sender,
+		fact.currency,
 	); err != nil {
 		return err
 	}
@@ -102,6 +106,7 @@ func (fact TransferFromFact) Bytes() []byte {
 	return util.ConcatBytesSlice(
 		fact.Token(),
 		fact.sender.Bytes(),
+		fact.currency.Bytes(),
 		util.ConcatBytesSlice(is...),
 	)
 }
@@ -116,6 +121,10 @@ func (fact TransferFromFact) Sender() base.Address {
 
 func (fact TransferFromFact) Items() []TransferFromItem {
 	return fact.items
+}
+
+func (fact TransferFromFact) Currency() types.CurrencyID {
+	return fact.currency
 }
 
 func (fact TransferFromFact) Addresses() ([]base.Address, error) {
@@ -134,31 +143,12 @@ func (fact TransferFromFact) Addresses() ([]base.Address, error) {
 	return as, nil
 }
 
-func (fact TransferFromFact) FeeBase() map[types.CurrencyID][]common.Big {
-	required := make(map[types.CurrencyID][]common.Big)
-
-	for i := range fact.items {
-		zeroBig := common.ZeroBig
-		cid := fact.items[i].Currency()
-		var amsTemp []common.Big
-		if ams, found := required[cid]; found {
-			ams = append(ams, zeroBig)
-			required[cid] = ams
-		} else {
-			amsTemp = append(amsTemp, zeroBig)
-			required[cid] = amsTemp
-		}
-	}
-
-	return required
+func (fact TransferFromFact) FeeBase() (types.CurrencyID, int, int, bool) {
+	return fact.Currency(), len(fact.items), len(fact.Bytes()), extras.HasItem
 }
 
 func (fact TransferFromFact) FeePayer() base.Address {
 	return fact.sender
-}
-
-func (fact TransferFromFact) FeeItemCount() (uint, bool) {
-	return uint(len(fact.items)), extras.HasItem
 }
 
 func (fact TransferFromFact) FactUser() base.Address {

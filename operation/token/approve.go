@@ -20,19 +20,22 @@ var MaxApproveItems = 100
 
 type ApproveFact struct {
 	base.BaseFact
-	sender base.Address
-	items  []ApproveItem
+	sender   base.Address
+	items    []ApproveItem
+	currency types.CurrencyID
 }
 
 func NewApproveFact(
 	token []byte,
 	sender base.Address,
 	items []ApproveItem,
+	currency types.CurrencyID,
 ) ApproveFact {
 	fact := ApproveFact{
 		BaseFact: base.NewBaseFact(ApproveFactHint, token),
 		sender:   sender,
 		items:    items,
+		currency: currency,
 	}
 	fact.SetHash(fact.GenerateHash())
 	return fact
@@ -53,6 +56,7 @@ func (fact ApproveFact) IsValid(b []byte) error {
 	if err := util.CheckIsValiders(nil, false,
 		fact.BaseFact,
 		fact.sender,
+		fact.currency,
 	); err != nil {
 		return err
 	}
@@ -95,6 +99,7 @@ func (fact ApproveFact) Bytes() []byte {
 	return util.ConcatBytesSlice(
 		fact.Token(),
 		fact.sender.Bytes(),
+		fact.currency.Bytes(),
 		util.ConcatBytesSlice(is...),
 	)
 }
@@ -109,6 +114,10 @@ func (fact ApproveFact) Sender() base.Address {
 
 func (fact ApproveFact) Items() []ApproveItem {
 	return fact.items
+}
+
+func (fact ApproveFact) Currency() types.CurrencyID {
+	return fact.currency
 }
 
 func (fact ApproveFact) Addresses() ([]base.Address, error) {
@@ -127,31 +136,12 @@ func (fact ApproveFact) Addresses() ([]base.Address, error) {
 	return as, nil
 }
 
-func (fact ApproveFact) FeeBase() map[types.CurrencyID][]common.Big {
-	required := make(map[types.CurrencyID][]common.Big)
-
-	for i := range fact.items {
-		zeroBig := common.ZeroBig
-		cid := fact.items[i].Currency()
-		var amsTemp []common.Big
-		if ams, found := required[cid]; found {
-			ams = append(ams, zeroBig)
-			required[cid] = ams
-		} else {
-			amsTemp = append(amsTemp, zeroBig)
-			required[cid] = amsTemp
-		}
-	}
-
-	return required
+func (fact ApproveFact) FeeBase() (types.CurrencyID, int, int, bool) {
+	return fact.Currency(), len(fact.items), len(fact.Bytes()), extras.HasItem
 }
 
 func (fact ApproveFact) FeePayer() base.Address {
 	return fact.sender
-}
-
-func (fact ApproveFact) FeeItemCount() (uint, bool) {
-	return uint(len(fact.items)), extras.HasItem
 }
 
 func (fact ApproveFact) FactUser() base.Address {

@@ -11,18 +11,20 @@ import (
 
 func (fact ApproveFact) MarshalBSON() ([]byte, error) {
 	return bsonenc.Marshal(bson.M{
-		"_hint":  fact.Hint().String(),
-		"hash":   fact.BaseFact.Hash().String(),
-		"token":  fact.BaseFact.Token(),
-		"sender": fact.sender,
-		"items":  fact.items,
+		"_hint":    fact.Hint().String(),
+		"hash":     fact.BaseFact.Hash().String(),
+		"token":    fact.BaseFact.Token(),
+		"sender":   fact.sender,
+		"items":    fact.items,
+		"currency": fact.currency,
 	})
 }
 
 type ApproveFactBSONUnmarshaler struct {
-	Hint   string   `bson:"_hint"`
-	Sender string   `bson:"sender"`
-	Items  bson.Raw `bson:"items"`
+	Hint     string   `bson:"_hint"`
+	Sender   string   `bson:"sender"`
+	Items    bson.Raw `bson:"items"`
+	Currency string   `bson:"currency"`
 }
 
 func (fact *ApproveFact) DecodeBSON(b []byte, enc *bsonenc.Encoder) error {
@@ -47,7 +49,7 @@ func (fact *ApproveFact) DecodeBSON(b []byte, enc *bsonenc.Encoder) error {
 	}
 	fact.BaseHinter = hint.NewBaseHinter(ht)
 
-	if err := fact.unpack(enc, uf.Sender, uf.Items); err != nil {
+	if err := fact.unpack(enc, uf.Sender, uf.Items, uf.Currency); err != nil {
 		return common.DecorateError(err, common.ErrDecodeBson, *fact)
 	}
 

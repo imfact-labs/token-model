@@ -2,6 +2,7 @@ package token
 
 import (
 	"github.com/imfact-labs/currency-model/common"
+	"github.com/imfact-labs/currency-model/types"
 	"github.com/imfact-labs/mitum2/base"
 	"github.com/imfact-labs/mitum2/util/encoder"
 	"github.com/pkg/errors"
@@ -11,12 +12,14 @@ func (fact *TransferFromFact) unpack(
 	enc encoder.Encoder,
 	sd string,
 	bits []byte,
+	cid string,
 ) error {
 	sender, err := base.DecodeAddress(sd, enc)
 	if err != nil {
 		return err
 	}
 	fact.sender = sender
+	fact.currency = types.CurrencyID(cid)
 
 	hits, err := enc.DecodeSlice(bits)
 	if err != nil {

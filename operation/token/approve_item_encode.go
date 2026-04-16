@@ -2,7 +2,6 @@ package token
 
 import (
 	"github.com/imfact-labs/currency-model/common"
-	"github.com/imfact-labs/currency-model/types"
 	"github.com/imfact-labs/mitum2/base"
 	"github.com/imfact-labs/mitum2/util/encoder"
 	"github.com/imfact-labs/mitum2/util/hint"
@@ -11,7 +10,7 @@ import (
 func (it *ApproveItem) unpack(
 	enc encoder.Encoder,
 	ht hint.Hint,
-	ca, apr, am, cid string,
+	ca, apr, am string,
 ) error {
 	it.BaseHinter = hint.NewBaseHinter(ht)
 	switch a, err := base.DecodeAddress(ca, enc); {
@@ -32,7 +31,6 @@ func (it *ApproveItem) unpack(
 	} else {
 		it.amount = b
 	}
-	it.currency = types.CurrencyID(cid)
 
 	return nil
 }

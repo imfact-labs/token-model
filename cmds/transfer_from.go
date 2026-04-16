@@ -71,13 +71,13 @@ func (cmd *TransferFromCommand) createOperation() (base.Operation, error) { // n
 	e := util.StringError(utils.ErrStringCreate("transfer-from operation"))
 
 	item1 := token.NewTransferFromItem(cmd.contract,
-		cmd.receiver, cmd.target1, cmd.Amount.Big, cmd.Currency.CID)
+		cmd.receiver, cmd.target1, cmd.Amount.Big)
 
 	item2 := token.NewTransferFromItem(cmd.contract,
-		cmd.receiver, cmd.target2, cmd.Amount.Big, cmd.Currency.CID)
+		cmd.receiver, cmd.target2, cmd.Amount.Big)
 
 	fact := token.NewTransferFromFact(
-		[]byte(cmd.Token), cmd.sender, []token.TransferFromItem{item1, item2},
+		[]byte(cmd.Token), cmd.sender, []token.TransferFromItem{item1, item2}, cmd.Currency.CID,
 	)
 
 	op := token.NewTransferFrom(fact)

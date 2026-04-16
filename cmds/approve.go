@@ -63,13 +63,13 @@ func (cmd *ApproveCommand) createOperation() (base.Operation, error) { // nolint
 	e := util.StringError(utils.ErrStringCreate("approve operation"))
 
 	item1 := token.NewApproveItem(cmd.contract,
-		cmd.approved1, cmd.Amount.Big, cmd.Currency.CID)
+		cmd.approved1, cmd.Amount.Big)
 
 	item2 := token.NewApproveItem(cmd.contract,
-		cmd.approved2, cmd.Amount.Big, cmd.Currency.CID)
+		cmd.approved2, cmd.Amount.Big)
 
 	fact := token.NewApproveFact(
-		[]byte(cmd.Token), cmd.sender, []token.ApproveItem{item1, item2},
+		[]byte(cmd.Token), cmd.sender, []token.ApproveItem{item1, item2}, cmd.Currency.CID,
 	)
 
 	op := token.NewApprove(fact)

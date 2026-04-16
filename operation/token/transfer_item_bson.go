@@ -14,7 +14,6 @@ func (it TransferItem) MarshalBSON() ([]byte, error) {
 			"contract": it.contract,
 			"receiver": it.receiver,
 			"amount":   it.amount,
-			"currency": it.currency,
 		},
 	)
 }
@@ -24,7 +23,6 @@ type TransferItemBSONUnmarshaler struct {
 	Contract string `bson:"contract"`
 	Receiver string `bson:"receiver"`
 	Amount   string `bson:"amount"`
-	Currency string `bson:"currency"`
 }
 
 func (it *TransferItem) DecodeBSON(b []byte, enc *bsonenc.Encoder) error {
@@ -38,7 +36,7 @@ func (it *TransferItem) DecodeBSON(b []byte, enc *bsonenc.Encoder) error {
 		return common.DecorateError(err, common.ErrDecodeBson, *it)
 	}
 
-	if err := it.unpack(enc, ht, u.Contract, u.Receiver, u.Amount, u.Currency); err != nil {
+	if err := it.unpack(enc, ht, u.Contract, u.Receiver, u.Amount); err != nil {
 		return common.DecorateError(err, common.ErrDecodeBson, *it)
 	}
 	return nil

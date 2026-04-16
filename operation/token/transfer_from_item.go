@@ -2,7 +2,6 @@ package token
 
 import (
 	"github.com/imfact-labs/currency-model/common"
-	"github.com/imfact-labs/currency-model/types"
 	"github.com/imfact-labs/mitum2/base"
 	"github.com/imfact-labs/mitum2/util"
 	"github.com/imfact-labs/mitum2/util/hint"
@@ -17,11 +16,10 @@ type TransferFromItem struct {
 	receiver base.Address
 	target   base.Address
 	amount   common.Big
-	currency types.CurrencyID
 }
 
 func NewTransferFromItem(
-	contract base.Address, receiver, target base.Address, amount common.Big, currency types.CurrencyID,
+	contract base.Address, receiver, target base.Address, amount common.Big,
 ) TransferFromItem {
 	return TransferFromItem{
 		BaseHinter: hint.NewBaseHinter(TransferFromItemHint),
@@ -29,7 +27,6 @@ func NewTransferFromItem(
 		receiver:   receiver,
 		target:     target,
 		amount:     amount,
-		currency:   currency,
 	}
 }
 
@@ -64,7 +61,6 @@ func (it TransferFromItem) IsValid([]byte) error {
 		it.contract,
 		it.receiver,
 		it.target,
-		it.currency,
 	)
 }
 
@@ -74,7 +70,6 @@ func (it TransferFromItem) Bytes() []byte {
 		it.receiver.Bytes(),
 		it.target.Bytes(),
 		it.amount.Bytes(),
-		it.currency.Bytes(),
 	)
 }
 
@@ -99,8 +94,4 @@ func (it TransferFromItem) Addresses() ([]base.Address, error) {
 
 func (it TransferFromItem) Amount() common.Big {
 	return it.amount
-}
-
-func (it TransferFromItem) Currency() types.CurrencyID {
-	return it.currency
 }

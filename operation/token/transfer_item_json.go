@@ -2,7 +2,6 @@ package token
 
 import (
 	"github.com/imfact-labs/currency-model/common"
-	"github.com/imfact-labs/currency-model/types"
 	"github.com/imfact-labs/mitum2/base"
 	"github.com/imfact-labs/mitum2/util"
 	"github.com/imfact-labs/mitum2/util/encoder"
@@ -11,10 +10,9 @@ import (
 
 type TransferItemJSONMarshaler struct {
 	hint.BaseHinter
-	Contract base.Address     `json:"contract"`
-	Receiver base.Address     `json:"receiver"`
-	Amount   string           `json:"amount"`
-	Currency types.CurrencyID `json:"currency"`
+	Contract base.Address `json:"contract"`
+	Receiver base.Address `json:"receiver"`
+	Amount   string       `json:"amount"`
 }
 
 func (it TransferItem) MarshalJSON() ([]byte, error) {
@@ -23,7 +21,6 @@ func (it TransferItem) MarshalJSON() ([]byte, error) {
 		Contract:   it.contract,
 		Receiver:   it.receiver,
 		Amount:     it.Amount().String(),
-		Currency:   it.currency,
 	})
 }
 
@@ -32,7 +29,6 @@ type TransferItemJSONUnmarshaler struct {
 	Contract string    `json:"contract"`
 	Receiver string    `json:"receiver"`
 	Amount   string    `json:"amount"`
-	Currency string    `json:"currency"`
 }
 
 func (it *TransferItem) DecodeJSON(b []byte, enc encoder.Encoder) error {
@@ -41,7 +37,7 @@ func (it *TransferItem) DecodeJSON(b []byte, enc encoder.Encoder) error {
 		return common.DecorateError(err, common.ErrDecodeJson, *it)
 	}
 
-	if err := it.unpack(enc, u.Hint, u.Contract, u.Receiver, u.Amount, u.Currency); err != nil {
+	if err := it.unpack(enc, u.Hint, u.Contract, u.Receiver, u.Amount); err != nil {
 		return common.DecorateError(err, common.ErrDecodeJson, *it)
 	}
 
