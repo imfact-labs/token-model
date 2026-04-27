@@ -13,13 +13,9 @@ import (
 
 type TransferFromCommand struct {
 	OperationCommand
-	Receiver ccmds.AddressFlag `arg:"" name:"receiver" help:"token receiver" required:"true"`
-	Target1  ccmds.AddressFlag `arg:"" name:"target1" help:"target approving" required:"true"`
-	Target2  ccmds.AddressFlag `arg:"" name:"target2" help:"target approving" required:"true"`
-	Amount   ccmds.BigFlag     `arg:"" name:"amount" help:"amount to transfer" required:"true"`
-	receiver base.Address
-	target1  base.Address
-	target2  base.Address
+	Receiver     ccmds.AddressFlag      `arg:"" name:"receiver" help:"token receiver" required:"true"`
+	TargetAmount AddressTokenAmountFlag `arg:"" name:"target" help:"target approving" required:"true"`
+	receiver     base.Address
 }
 
 func (cmd *TransferFromCommand) Run(pctx context.Context) error { // nolint:dupl
@@ -52,32 +48,22 @@ func (cmd *TransferFromCommand) parseFlags() error {
 	}
 	cmd.receiver = receiver
 
-	target, err := cmd.Target1.Encode(cmd.Encoders.JSON())
-	if err != nil {
-		return errors.Wrapf(err, "invalid target format, %q", cmd.Target1.String())
-	}
-	cmd.target1 = target
-
-	target, err = cmd.Target2.Encode(cmd.Encoders.JSON())
-	if err != nil {
-		return errors.Wrapf(err, "invalid target format, %q", cmd.Target2.String())
-	}
-	cmd.target2 = target
-
 	return nil
 }
 
 func (cmd *TransferFromCommand) createOperation() (base.Operation, error) { // nolint:dupl}
 	e := util.StringError(utils.ErrStringCreate("transfer-from operation"))
-
-	item1 := token.NewTransferFromItem(cmd.contract,
-		cmd.receiver, cmd.target1, cmd.Amount.Big)
-
-	item2 := token.NewTransferFromItem(cmd.contract,
-		cmd.receiver, cmd.target2, cmd.Amount.Big)
+	var items []token.TransferFromItem
+	for i := range cmd.TargetAmount.Address() {
+		item := token.NewTransferFromItem(cmd.contract, cmd.receiver, cmd.TargetAmount.Address()[i], cmd.TargetAmount.Amount()[i])
+		if err := item.IsValid(nil); err != nil {
+			return nil, err
+		}
+		items = append(items, item)
+	}
 
 	fact := token.NewTransferFromFact(
-		[]byte(cmd.Token), cmd.sender, []token.TransferFromItem{item1, item2}, cmd.Currency.CID,
+		[]byte(cmd.Token), cmd.sender, items, cmd.Currency.CID,
 	)
 
 	op := token.NewTransferFrom(fact)

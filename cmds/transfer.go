@@ -8,16 +8,11 @@ import (
 	"github.com/imfact-labs/mitum2/util"
 	"github.com/imfact-labs/token-model/operation/token"
 	"github.com/imfact-labs/token-model/utils"
-	"github.com/pkg/errors"
 )
 
 type TransferCommand struct {
 	OperationCommand
-	Receiver1 ccmds.AddressFlag `arg:"" name:"receiver" help:"token receiver" required:"true"`
-	Receiver2 ccmds.AddressFlag `arg:"" name:"receiver" help:"token receiver" required:"true"`
-	Amount    ccmds.BigFlag     `arg:"" name:"amount" help:"amount to transfer" required:"true"`
-	receiver1 base.Address
-	receiver2 base.Address
+	ReceiverAmount AddressTokenAmountFlag `arg:"" name:"receiver-amount" help:"receiver token amount (ex: \"<address>,<amount>\") separator @" required:"true"`
 }
 
 func (cmd *TransferCommand) Run(pctx context.Context) error { // nolint:dupl
@@ -44,32 +39,22 @@ func (cmd *TransferCommand) parseFlags() error {
 		return err
 	}
 
-	receiver, err := cmd.Receiver1.Encode(cmd.Encoders.JSON())
-	if err != nil {
-		return errors.Wrapf(err, "invalid receiver format, %q", cmd.Receiver1.String())
-	}
-	cmd.receiver1 = receiver
-
-	receiver, err = cmd.Receiver2.Encode(cmd.Encoders.JSON())
-	if err != nil {
-		return errors.Wrapf(err, "invalid receiver format, %q", cmd.Receiver2.String())
-	}
-	cmd.receiver2 = receiver
-
 	return nil
 }
 
 func (cmd *TransferCommand) createOperation() (base.Operation, error) { // nolint:dupl}
 	e := util.StringError(utils.ErrStringCreate("transfer operation"))
-
-	item1 := token.NewTransferItem(cmd.contract,
-		cmd.receiver1, cmd.Amount.Big)
-
-	item2 := token.NewTransferItem(cmd.contract,
-		cmd.receiver2, cmd.Amount.Big)
+	var items []token.TransferItem
+	for i := range cmd.ReceiverAmount.Address() {
+		item := token.NewTransferItem(cmd.contract, cmd.ReceiverAmount.Address()[i], cmd.ReceiverAmount.Amount()[i])
+		if err := item.IsValid(nil); err != nil {
+			return nil, err
+		}
+		items = append(items, item)
+	}
 
 	fact := token.NewTransferFact(
-		[]byte(cmd.Token), cmd.sender, []token.TransferItem{item1, item2}, cmd.Currency.CID,
+		[]byte(cmd.Token), cmd.sender, items, cmd.Currency.CID,
 	)
 
 	op := token.NewTransfer(fact)
