@@ -169,7 +169,6 @@ func (fact TransferFromFact) ActiveContract() []base.Address {
 
 func (fact TransferFromFact) DupKey() (map[types.DuplicationKeyType][]string, error) {
 	r := make(map[types.DuplicationKeyType][]string)
-	r[extras.DuplicationKeyTypeSender] = []string{fact.sender.String()}
 	dupSet := make(map[string]struct{}, len(fact.items))
 	for _, item := range fact.items {
 		key := fmt.Sprintf("%s:%s", item.Contract().String(), item.Target().String())
@@ -188,6 +187,16 @@ func (fact TransferFromFact) DupKey() (map[types.DuplicationKeyType][]string, er
 
 type TransferFrom struct {
 	extras.ExtendedOperation
+}
+
+func (op TransferFrom) DupKey() (map[types.DuplicationKeyType][]string, error) {
+	r := make(map[types.DuplicationKeyType][]string)
+
+	if err := extras.AddOperationFeePayerDupKeys(r, op); err != nil {
+		return nil, err
+	}
+
+	return r, nil
 }
 
 func NewTransferFrom(fact TransferFromFact) TransferFrom {

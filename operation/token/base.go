@@ -86,10 +86,3 @@ func (fact TokenFact) FactUser() base.Address {
 func (fact TokenFact) Signer() base.Address {
 	return fact.sender
 }
-
-func (fact TokenFact) DupKey() (map[types.DuplicationKeyType][]string, error) {
-	r := make(map[types.DuplicationKeyType][]string)
-	r[extras.DuplicationKeyTypeSender] = []string{fact.sender.String()}
-
-	return r, nil
-}

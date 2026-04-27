@@ -5,7 +5,7 @@ import (
 
 	"github.com/imfact-labs/currency-model/common"
 	"github.com/imfact-labs/currency-model/operation/extras"
-	ctypes "github.com/imfact-labs/currency-model/types"
+	"github.com/imfact-labs/currency-model/types"
 	"github.com/imfact-labs/mitum2/base"
 	"github.com/imfact-labs/mitum2/util"
 	"github.com/imfact-labs/mitum2/util/hint"
@@ -28,7 +28,7 @@ type BurnFact struct {
 func NewBurnFact(
 	token []byte,
 	sender, contract base.Address,
-	currency ctypes.CurrencyID,
+	currency types.CurrencyID,
 	target base.Address,
 	amount common.Big,
 ) BurnFact {
@@ -100,9 +100,8 @@ func (fact BurnFact) ActiveContract() []base.Address {
 	return []base.Address{fact.contract}
 }
 
-func (fact BurnFact) DupKey() (map[ctypes.DuplicationKeyType][]string, error) {
-	r := make(map[ctypes.DuplicationKeyType][]string)
-	r[extras.DuplicationKeyTypeSender] = []string{fact.sender.String()}
+func (fact BurnFact) DupKey() (map[types.DuplicationKeyType][]string, error) {
+	r := make(map[types.DuplicationKeyType][]string)
 	r[processor.DuplicationTypeTokenSender] = []string{fmt.Sprintf("%s:%s", fact.contract.String(), fact.sender.String())}
 
 	return r, nil
@@ -110,6 +109,16 @@ func (fact BurnFact) DupKey() (map[ctypes.DuplicationKeyType][]string, error) {
 
 type Burn struct {
 	extras.ExtendedOperation
+}
+
+func (op Burn) DupKey() (map[types.DuplicationKeyType][]string, error) {
+	r := make(map[types.DuplicationKeyType][]string)
+
+	if err := extras.AddOperationFeePayerDupKeys(r, op); err != nil {
+		return nil, err
+	}
+
+	return r, nil
 }
 
 func NewBurn(fact BurnFact) Burn {

@@ -3,7 +3,7 @@ package token
 import (
 	"github.com/imfact-labs/currency-model/common"
 	"github.com/imfact-labs/currency-model/operation/extras"
-	ctypes "github.com/imfact-labs/currency-model/types"
+	"github.com/imfact-labs/currency-model/types"
 	"github.com/imfact-labs/mitum2/base"
 	"github.com/imfact-labs/mitum2/util"
 	"github.com/imfact-labs/mitum2/util/hint"
@@ -25,7 +25,7 @@ type MintFact struct {
 func NewMintFact(
 	token []byte,
 	sender, contract base.Address,
-	currency ctypes.CurrencyID,
+	currency types.CurrencyID,
 	receiver base.Address,
 	amount common.Big,
 ) MintFact {
@@ -97,9 +97,8 @@ func (fact MintFact) ActiveContractOwnerHandlerOnly() [][2]base.Address {
 	return [][2]base.Address{{fact.contract, fact.sender}}
 }
 
-func (fact MintFact) DupKey() (map[ctypes.DuplicationKeyType][]string, error) {
-	r := make(map[ctypes.DuplicationKeyType][]string)
-	r[extras.DuplicationKeyTypeSender] = []string{fact.sender.String()}
+func (fact MintFact) DupKey() (map[types.DuplicationKeyType][]string, error) {
+	r := make(map[types.DuplicationKeyType][]string)
 	r[extras.DuplicationKeyTypeContractStatus] = []string{fact.contract.String()}
 
 	return r, nil
@@ -107,6 +106,16 @@ func (fact MintFact) DupKey() (map[ctypes.DuplicationKeyType][]string, error) {
 
 type Mint struct {
 	extras.ExtendedOperation
+}
+
+func (op Mint) DupKey() (map[types.DuplicationKeyType][]string, error) {
+	r := make(map[types.DuplicationKeyType][]string)
+
+	if err := extras.AddOperationFeePayerDupKeys(r, op); err != nil {
+		return nil, err
+	}
+
+	return r, nil
 }
 
 func NewMint(fact MintFact) Mint {
